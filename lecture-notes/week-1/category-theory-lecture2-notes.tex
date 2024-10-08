@@ -184,113 +184,114 @@
         \]
 
         We call $g$ the \textbf{inverse} of $f$.
+    \end{definition}
 
-        \subsection{Examples}
+    \subsection{Examples}
+
+    \begin{itemize}
+        \item In \underline{Set theory}: isomorphisms are bijections.
+        \item In \underline{Group theory}: isomorphisms are group homomorphisms.
+        \item In $\underline{Topology}$: isomorphisms are continuous functions.
+        \item In $\Sigma(G)$:
+        \[
+            \begin{tikzcd}[scale=4.5]
+                * \arrow[loop left, "f"] \arrow[loop right, "g"] \arrow[loop above, "h"]
+            \end{tikzcd}
+        \]
+        \item In $\underline{P}$:
+        \[
+            \begin{tikzcd}[column sep=4em, row sep=4em]
+                A \arrow[r, bend left=50, "\leq"]
+                & B \arrow[l, bend left=50, "\leq"]
+            \end{tikzcd} \Leftrightarrow a = b
+        \]
+        Identities are always isomorphisms.
+    \end{itemize}
+
+    \subsection{Uniquness of inverses}
+
+    \begin{proposition}
+        Let $f: A \to B$ be a map in a category $\mathcal{C}$. If the inverse of $f$ exists, then it is unique.
+    \end{proposition}
+
+    \begin{proof}
+        Let $g_1, g_2: B \to A$ be inverses of $f$.
+
+        We claim that $g_1 = g_2$.
 
         \begin{itemize}
-            \item In \underline{Set theory}: isomorphisms are bijections.
-            \item In \underline{Group theory}: isomorphisms are group homomorphisms.
-            \item In $\underline{Topology}$: isomorphisms are continuous functions.
-            \item In $\Sigma(G)$:
+            \item $g_1:$
             \[
-                \begin{tikzcd}[scale=4.5]
-                    * \arrow[loop left, "f"] \arrow[loop right, "g"] \arrow[loop above, "h"]
-                \end{tikzcd}
+                g_1 f = 1_A \quad \text{and} \quad f g_1 = 1_B
             \]
-            \item In $\underline{P}$:
+            \item $g_2:$
             \[
-                \begin{tikzcd}[column sep=4em, row sep=4em]
-                    A \arrow[r, bend left=50, "\leq"]
-                    & B \arrow[l, bend left=50, "\leq"]
-                \end{tikzcd} \Leftrightarrow a = b
+                g_2 f = 1_A \quad \text{and} \quad f g_2 = 1_B
             \]
-            Identities are always isomorphisms.
         \end{itemize}
 
-        \subsection{Uniquness of inverses}
-
-        \begin{proposition}
-            Let $f: A \to B$ be a map in a category $\mathcal{C}$. If the inverse of $f$ exists, then it is unique.
-        \end{proposition}
-
-        \begin{proof}
-            Let $g_1, g_2: B \to A$ be inverses of $f$.
-
-            We claim that $g_1 = g_2$.
-
-            \begin{itemize}
-                \item $g_1:$
-                \[
-                    g_1 f = 1_A \quad \text{and} \quad f g_1 = 1_B
-                \]
-                \item $g_2:$
-                \[
-                    g_2 f = 1_A \quad \text{and} \quad f g_2 = 1_B
-                \]
-            \end{itemize}
-
-            We can write
-            \[
-                \begin{array}{c c} % Create a 2x2 array
-                    % First commutative diagram in the first column
-                    \begin{tikzcd}[column sep=4em, row sep=4em]
-                        A  \arrow[r, "f"] \arrow[dr, bend right, "1_A"]
-                        & B  \arrow[d, "g_1 \text{ or } g_2"]\\
-                        & A
-                    \end{tikzcd}
-                    &
-                    % Second commutative diagram in the second column
-                    \begin{tikzcd}[column sep=4em, row sep=4em]
-                        B  \arrow[r, "g_1 \text{ or } g_2"] \arrow[dr, bend right, "1_B"]
-                        & A  \arrow[d, "f"]\\
-                        & B
-                    \end{tikzcd} \\
-                    % Text underneath each diagram
-                \end{array}
-            \]
-
-            That is
-            \[
-                \begin{tikzcd}[column sep=7em, row sep=2em]
-                    & B \arrow[dr, "g_1"]  \\
-                    B \arrow[ur,  "1_B"] \arrow[dr, "g_2"] \arrow[rr, bend left = 95, "g_1"] \arrow[rr, bend right=95, "g_2"] & & A\\
-                    & A \arrow[ur, "1_A"] \arrow[uu, "f"]
-                \end{tikzcd} \quad
-                \Leftrightarrow \quad
-                \begin{tikzcd}[column sep=7em, row sep=2em]
-                    B\arrow[bend left, "g_1"]{r}\arrow[bend right, "g_2"]{r}&A
+        We can write
+        \[
+            \begin{array}{c c} % Create a 2x2 array
+                % First commutative diagram in the first column
+                \begin{tikzcd}[column sep=4em, row sep=4em]
+                    A  \arrow[r, "f"] \arrow[dr, bend right, "1_A"]
+                    & B  \arrow[d, "g_1 \text{ or } g_2"]\\
+                    & A
                 \end{tikzcd}
-            \]
+                &
+                % Second commutative diagram in the second column
+                \begin{tikzcd}[column sep=4em, row sep=4em]
+                    B  \arrow[r, "g_1 \text{ or } g_2"] \arrow[dr, bend right, "1_B"]
+                    & A  \arrow[d, "f"]\\
+                    & B
+                \end{tikzcd} \\
+                % Text underneath each diagram
+            \end{array}
+        \]
 
-            Using this diagram, we can write
-            \[
-                \begin{align}
-                    g_1 &= g_1 \ 1_B \quad \text{by axiom of identity} \\
-                    &= g_1 \ f \  g_2  \quad \text{since } f \ g_2 = 1_B \\
-                    &= 1_A \ g_2 \quad \text{since } g_1 \ f = 1_A \\
-                    &= g_2 \ 1_B \quad \text{by axiom of identity} \\
-                    &= g_2
-                \end{align}
-            \]
-        \end{proof}
+        That is
+        \[
+            \begin{tikzcd}[column sep=7em, row sep=2em]
+                & B \arrow[dr, "g_1"]  \\
+                B \arrow[ur,  "1_B"] \arrow[dr, "g_2"] \arrow[rr, bend left = 95, "g_1"] \arrow[rr, bend right=95, "g_2"] & & A\\
+                & A \arrow[ur, "1_A"] \arrow[uu, "f"]
+            \end{tikzcd} \quad
+            \Leftrightarrow \quad
+            \begin{tikzcd}[column sep=7em, row sep=2em]
+                B\arrow[bend left, "g_1"]{r}\arrow[bend right, "g_2"]{r}&A
+            \end{tikzcd}
+        \]
 
-        \begin{note}
-            When $f: A \to B$ has an inverse, we can write $f^{-1}: B \to A$ for the inverse.
-        \end{note}
+        Using this diagram, we can write
+        \[
+            \begin{align}
+                g_1 &= g_1 \ 1_B \quad \text{by axiom of identity} \\
+                &= g_1 \ f \  g_2  \quad \text{since } f \ g_2 = 1_B \\
+                &= 1_A \ g_2 \quad \text{since } g_1 \ f = 1_A \\
+                &= g_2 \ 1_B \quad \text{by axiom of identity} \\
+                &= g_2
+            \end{align}
+        \]
+    \end{proof}
 
-        \subsection{Terminal and Initial objects}
+    \begin{note}
+        When $f: A \to B$ has an inverse, we can write $f^{-1}: B \to A$ for the inverse.
+    \end{note}
 
-        \begin{definition}[Terminal object]
-            Let $\mathcal{C}$ be a category.
+    \subsection{Terminal and Initial objects}
 
-            An object $T$ of $\mathcal{C}$ is a \textbf{terminal object} if for any object $A \in \text{Ob}(\mathcal{C})$, there exists a unique map $A \to T$.
-        \end{definition}
+    \begin{definition}[Terminal object]
+        Let $\mathcal{C}$ be a category.
 
-        \begin{definition}[Initial object]
-            Let $\mathcal{C}$ be a category.
+        An object $T$ of $\mathcal{C}$ is a \textbf{terminal object} if for any object $A \in \text{Ob}(\mathcal{C})$, there exists a unique map $A \to T$.
+    \end{definition}
 
-            An object $I$ of $\mathcal{C}$ is \textbf{initial} if for any object $A \in \text{Ob}(\mathcal{C})$, there exists a unique map $f: I \to A$.
-        \end{definition}
+    \begin{definition}[Initial object]
+        Let $\mathcal{C}$ be a category.
+
+        An object $I$ of $\mathcal{C}$ is \textbf{initial} if for any object $A \in \text{Ob}(\mathcal{C})$, there exists a unique map $f: I \to A$.
+    \end{definition}
 
     \subsubsection{Examples}
     \begin{itemize}

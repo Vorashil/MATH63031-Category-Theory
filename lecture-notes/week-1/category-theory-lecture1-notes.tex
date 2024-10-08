@@ -1,0 +1,213 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+
+\usepackage{tikz}
+\usepackage{tikz-cd}
+\usepackage{graphicx} % Required for inserting images
+\usepackage[a4paper, margin=1in]{geometry}
+\usepackage{amsfonts}
+\usepackage{amsmath} % Set custom margins
+\usepackage{parskip}
+\usepackage{amssymb} % disable indentation
+
+
+\title{Category Theory - Lecture 1 (Notes)}
+\author{Vorashil Farzaliyev}
+\date{September 2024}
+
+\newcommand*{\longto}{\xrightarrow{\hspace{10pt}}}
+
+
+\newtheorem{remark}{Remark}
+\newtheorem{lemma}{Lemma}
+\newtheorem{definition}{Definition}
+\newtheorem{observation}{Observation}
+\newtheorem{example}{Example}
+\newtheorem{theorem}{Theorem}
+\newtheorem{note}{Note}
+
+
+\begin{document}
+    \maketitle
+
+
+    \section{Introduction}
+
+    Let's start looking into some examples.
+
+    \subsection{One element set}
+
+    Let $1 = \{*\}$ be a one-element set. Then, for every set $A$ there exists a
+    \underline{unique function}:
+    \[
+        A \to 1
+    \]
+    \[
+        a \mapsto *
+    \]
+
+    \subsection{Ring of integers}
+    Let's remind ourselves of the definition of ring.
+
+    \subsubsection{Some useful definitions}
+
+    \begin{definition}[Ring]
+        A ring is a set $R$ with two binary operations $+$ and $\times$ and an element $0$ such that:
+        \begin{itemize}
+            \item $(R, +)$ is an abelian group
+            \item $(R, \times)$ is a monoid
+            \item Multiplication is distributive over addition
+        \end{itemize}
+    \end{definition}
+
+    \begin{definition}[Monoid]
+        A monoid is a set $M$ with a binary operation $\times$ and an identity element $1$ such that:
+        \begin{itemize}
+            \item $\times$ is associative
+            \item $1 \times a = a \times 1 = a$ for all $a \in M$
+        \end{itemize}
+    \end{definition}
+
+    \begin{definition}[Ring homomorphism]
+        Let $R, S$ be rings.
+        A ring homomorphism is a function $\phi: R \to S$ such that:
+        \begin{enumerate}
+            \item $\phi(0_R) = 0_S$
+            \item $\phi(a + b) = \phi(a) + \phi(b)$ for all $a, b \in R$
+            \item $\phi(a \times b) = \phi(a) \times \phi(b)$ for all $a, b \in R$
+        \end{enumerate}
+        We can also say that $\phi$ is a \textbf{group homomorphism} because of 1 and 2.
+    \end{definition}
+
+    \subsubsection{\mathbb{Z} as a ring}
+
+    So let $\mathbb{Z}$ be the ring of integers. For every ring $R$ there exists a unique ring homomorphism:
+    \[
+        \mathbb{Z} \to R
+    \]
+
+
+    \section{What is a category?}
+
+    \begin{definition}[Category]
+        A category $\mathcal{C}$ consists of:
+        \begin{itemize}
+            \item a collection of objects $\text{Ob}(\mathcal{C})$
+            \item for each pair of objects $A, B \in \text{Ob}(\mathcal{C})$, a collection of morphisms $\mathcal{C}(A, B)$ from $A$ to $B$
+            \item for all $A, B, C \in \text{Ob}(\mathcal{C})$, a function $\circ$
+            \begin{gather*}
+                \mathcal{C}(B,C) \times \mathcal{C}(A,B) \stackrel{\circ}{\to} \mathcal{C}(A,C)\\
+                (g, f) \mapsto g \circ f\\
+            \end{gather*}
+            \item for each object $A \in \text{Ob}(\mathcal{C})$, an identity morphism $1_A \in \mathcal{C}(A, A)$
+        \end{itemize}
+
+        subject to the following axioms:
+        \begin{itemize}
+            \item \textbf{Associativity}: for all $A, B, C, D \in \text{Ob}(\mathcal{C})$,
+            and all $f \in \mathcal{C}(A, B)$, $g \in \mathcal{C}(B, C)$, $h \in \mathcal{C}(C, D)$,
+            \[
+                \underbrace{h \circ \underbrace{(g \circ f)}_{\in \mathcal{C}(A, C)}}_{\in \mathcal{C}(A, D)} = \underbrace{\underbrace{(h \circ g)}_{\in \mathcal{C}(B, D)} \circ f}_{\in \mathcal{C}(A, D)}
+            \]
+            \item \textbf{Unit}: for all $A, B \in \text{Ob}(\mathcal{C})$ and for all $f \in \mathcal{C}(A, B)$,
+            \begin{gather*}
+                \underbrace{f \circ 1_A = f}_{
+                    \mathcal{C}(A, B) \times \mathcal{C}(A, A) \stackrel{\circ}{\to} \mathcal{C}(A, B)
+                }\\
+                \underbrace{ 1_B \circ f = f}_{
+                    \mathcal{C}(B, B) \times \mathcal{C}(A, B) \stackrel{\circ}{\to} \mathcal{C}(A, B)
+                }\\
+            \end{gather*}
+        \end{itemize}
+    \end{definition}
+
+    \begin{note}[Terminology / Notation]
+        Fix a category $\mathcal{C}$.
+        \begin{itemize}
+            \item We call all elements of $\text{Ob}(\mathcal{C})$ \textbf{objects} of $\mathcal{C}$.
+            \item for all $A, B \in \text{Ob}(\mathcal{C})$, we call $\mathcal{C}(A, B)$ the \textbf{maps} (or morphisms, or arrows) from $A$ to $B$.
+            \item for all $f: A \to B$, $g: B \to C$, we call $g \circ f$ the \textbf{composition} of $f$ and $g$.
+            \item for all $A \in \text{Ob}(\mathcal{C})$, we call $1_A$ the \textbf{identity} on $A$.
+            \item we often write $A \in \mathcal{C}$ to mean $A \in \text{Ob}(\mathcal{C})$.
+        \end{itemize}
+    \end{note}
+
+    \subsection{Some examples of categories}
+
+    \subsubsection{Set}
+    \begin{itemize}
+        \item $\mathcal{C} = \text{Set}$
+        \item $\text{Ob}(\mathcal{C}) = \text{sets $A$, $B$} \dots$
+        \item $\mathcal{C}(A, B) = \textbf{Set}(A, B)$ = functions from $A$ to $B$
+        \item Composition
+        \begin{gather*}
+            \underbrace{A \stackrel{f}{\to} B \stackrel{g}{\to} C}_{g \circ f}\\
+            a \mapsto (g \circ f)(a) = g(f(a))\\
+        \end{gather*}
+        \item Identity: $1_A: A \to A$ is the identity function with $a \mapsto a$.
+    \end{itemize}
+
+    \subsubsection{Grp}
+    \begin{itemize}
+        \item $\mathcal{C} = \text{Grp}$
+        \item $\text{Ob}(\mathcal{C}) = \text{groups $G$, $H$} \dots$
+        \item $\mathcal{C}(G, H) = \textbf{Grp}(G, H)$ = group homomorphisms from $G$ to $H$
+        \item Composition: composition of group homomorphisms
+        \begin{gather*}
+            \underbrace{A \stackrel{f}{\to} B \stackrel{g}{\to} C}_{g \circ f}\\
+            a \mapsto (g \circ f)(a) = g(f(a))\\
+        \end{gather*}
+        \item Identity: $1_G: G \to G$, $g \mapsto g$
+    \end{itemize}
+
+    \subsubsection{Top}
+    \begin{itemize}
+        \item $\mathcal{C} = \text{Top}$ (topological spaces)
+        \item $\text{Ob}(\mathcal{C}) = \text{topological spaces $X$, $Y$} \dots$
+        \item $\mathcal{C}(X, Y) = \textbf{Top}(X, Y)$ = continuous functions from $X$ to $Y$
+        \item Composition: \textbf{??????}
+        \item Identity: $1_X: X \to X$, $g \mapsto g$
+    \end{itemize}
+
+    \subsection{Commutative diagrams}
+    Fix a category $\mathcal{C}$.
+    \begin{enumerate}
+        \item\[
+                 A_1 \stackrel{f1}{\to} A_2 \stackrel{f2}{\to} A_3 \to \dots \to A_n \stackrel{f_n}{\to} A_{n+1}
+        \]
+        There is usually a unique map
+        \[
+            A_1 \stackrel{f_n \circ \dots \circ f_2 \circ f_1}{\longto} A_{n+1}
+        \]
+        \item Pictures lik this are
+        \[
+            \begin{tikzcd}[column sep=2em, row sep=4em] % Adjust spacing here
+                A  \arrow[d, "h"] \arrow[rr, "f"] &
+                & B \arrow[d, "g"] \\
+                D \arrow[r, "j"] & E \arrow[r, "k"] & C \\
+            \end{tikzcd}
+            \quad \text{are commutative if } g\circ f = k \circ j \circ h.
+        \]
+    \end{enumerate}
+
+    \subsection{Other examples of unusual categories}
+
+    One thing to note is that we can have a category where objects are not sets and morphisms are not functions.
+
+    Let $(G, \cdot , 1)$ be a group. Define a category $\Sigma(G)$ as follows:
+
+    \begin{itemize}
+        \item $\text{Ob}(\Sigma(G)) = \{ *\}$
+        \item $\Sigma(G)(*, *) = G$ (elements of G are maps in $\Sigma(G)$)
+        \item Composition:
+        \[
+            \Sigma(G)(*, *) \times \Sigma(G)(*, *) \to G
+        \]
+        \item Identity: $1_*: G \to G$, $g \mapsto g$, where $1_* \in \Sigma(G)(*, *)$.
+        \item $1 \in G$
+
+    \end{itemize}
+
+
+
+\end{document}

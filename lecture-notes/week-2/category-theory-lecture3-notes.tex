@@ -1,0 +1,349 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+
+\usepackage{tikz}
+\usepackage{tikz-cd}
+\usepackage{graphicx} % Required for inserting images
+\usepackage[a4paper, margin=1in]{geometry}
+\usepackage{amsfonts}
+\usepackage{amsmath} % Set custom margins
+\usepackage{parskip}
+\usepackage{amssymb} % disable indentation
+\usepackage{amsthm}
+\usepackage{annotate-equations}
+
+
+\title{Category Theory - Lecture 3 (Notes)}
+\author{Vorashil Farzaliyev}
+\date{September 2024}
+
+% Define a new theorem style that starts content on a new line
+
+
+\newtheorem{remark}{Remark}[section]
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{proposition}{Proposition}[section]
+\newtheorem{definition}{Definition}[section]
+\newtheorem{observation}{Observation}[section]
+\newtheorem{example}{Example}[section]
+\newtheorem{exercise}{Exercise}[section]
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{note}{Note}[section]
+
+\renewcommand{\shorto}{\to}
+% new command for making \mapsto 0.5cm
+
+\renewcommand{\to}{\xrightarrow{\hspace{0.5cm}}}  % Adjust the length as needed
+\renewcommand{\mapsto}{\mathrel{\kernel\longmapsto\kernel}}  % Adjust spacing with \mkern if needed
+
+\begin{document}
+    \maketitle
+
+
+    \section{Functors}
+
+    \begin{definition}[Functor]
+        Let $\mathcal{C}$ and $\mathcal{D}$ be categories.
+        \\
+        \vspace{0.05in}
+
+        A \textbf{functor} $F: \mathcal{C} \to \mathcal{D}$ consists of:
+
+        \begin{itemize}
+            \item A function
+            \begin{gather*}
+                F: \text{Ob}(\mathcal{C}) \to \text{Ob}(\mathcal{D})\\
+                A \mapsto F(A)\\
+            \end{gather*}
+            \item $\forall A, B \in \text{Ob}(\mathcal{C})$
+            \begin{gather*}
+                F: \mathcal{C}(A, B) \to \mathcal{D}(F(A), F(B))\\
+                f \mapsto F(f)\\
+            \end{gather*}
+        \end{itemize}
+        with the following "functoriality" axioms satisfied:
+        \begin{itemize}
+            \item \textbf{Associativity}: for all $f: A \to B$ and $g: B \to C$ in $\mathcal{C}$,
+            \begin{equation*}
+                F(g \ \tikzmarknode{node1}{  \circ } \  f) = F(g) \ \tikzmarknode{node2}{ \circ } \ F(f)
+            \end{equation*}
+            \annotate[yshift=-1em]{below,left}{node1}{composition in $\mathcal{C}$}
+            \annotate[yshift=-1em]{below}{node2}{composition in $\mathcal{D}$}
+            \vspace{0.2in}
+            \item \textbf{Identity} for all $A \in \text{Ob}(\mathcal{C})$,
+            \[
+                F(1_A) = 1_{F(A)}
+            \]
+        \end{itemize}
+    \end{definition}
+
+    \begin{observation}
+        Let $F: \mathcal{C} \to \mathcal{D}$ be a functor.
+        \begin{itemize}
+            \item The action of $F$ on any string of composable maps is well defined. i.e
+            \[
+                \text{for all } \underbrace{A_1 \stackrel{f1}{\to} A_2 \stackrel{f2}{\to} A_3 \to \dots \to A_n \stackrel{f_n}{\to} A_{n+1}}_{f_n \dots f_2 \dots f_1: A_1 \to A_{n+1}} \text{ in } \mathcal{C}
+            \]
+            we have a unique map
+            \[
+                \underbrace{FA_1 \stackrel{F(f_1)}{\to} FA_2 \stackrel{F(f_2)}{\to} F(A_3) \to \dots \to FA_n \stackrel{F(f_n)}{\to} FA_{n+1}}_{F(f_n \dots f_2 \dots f_1): FA_1 \to FA_{n+1}} \text{ in } \mathcal{D}
+            \]
+            \newpage
+            \item Since the composition of maps is well defined, we can say that $F$ preserves the commutative diagrams.
+            \vspace{0.2in}
+            \[
+                \begin{array}{c c} % Create a 2x2 array
+                    \begin{tikzcd}[column sep=4em, row sep=4em]
+                        A \arrow[r, "f"] \arrow[d, "h"]
+                        & B \arrow[d, "g"] \\
+                        C \arrow[r, "k"]
+                        & D
+                    \end{tikzcd}
+                    &
+                    \Rightarrow
+                    \begin{tikzcd}[column sep=4em, row sep=4em]
+                        FA \arrow[r, "Ff"] \arrow[d, "Fh"]
+                        & FB \arrow[d, "Fg"] \\
+                        FC \arrow[r, "Fk"]
+                        & FD
+                    \end{tikzcd}
+                    &
+                    \text{commutes in } \mathcal{C} & \text{commutes in } \mathcal{D}
+                    &
+                    gf=kh & FgFh=FkFh
+                \end{array}
+            \]
+        \end{itemize}
+    \end{observation}
+
+
+    \begin{remark}
+        Let $F: \mathcal{C} \to \mathcal{D}$ be a functor.
+        \vspace{0.2in}
+
+        If $f: A \shorto B$ is an isomorphism in $\mathcal{C}$, then $F(f): F(A) \shorto F(B)$ is an isomorphism in $\mathcal{D}$.
+    \end{remark}
+    \begin{proof}
+        If $f: A \to B$ is an isomorphism in $\mathcal{C}$, then we have $f^{-1}: B \to A$ in $\mathcal{C}$ s.t
+        \[
+            \begin{tikzcd}[column sep=4em, row sep=4em]
+                A  \arrow[r, "f"] \arrow[dr, bend right, "1_A"]
+                & B  \arrow[d, "f^{-1}"]\\
+                & A
+            \end{tikzcd}
+            &
+            % Second commutative diagram in the second column
+            \begin{tikzcd}[column sep=4em, row sep=4em]
+                B  \arrow[r, "f^{-1}"] \arrow[dr, bend right, "1_B"]
+                & A  \arrow[d, "f"]\\
+                & B
+            \end{tikzcd}
+        \]
+        We want to show that $F(f)$ is an isomorphism in $\mathcal{D}$. In other words, we want to show that
+        \[
+            (Ff)^{-1}: F(B) \to F(A)
+        \]
+        is given by $F(f^{-1}): FB \to FA$.
+        To check this, we need to show that following diagram commutes:
+        \[
+            \begin{tikzcd}[column sep=4em, row sep=4em]
+                FA  \arrow[r, "Ff"] \arrow[dr, bend right, "1_{FA}"]
+                & FB  \arrow[d, "F(f^{-1})"]\\
+                & FA
+            \end{tikzcd}
+            &
+            % Second commutative diagram in the second column
+            \begin{tikzcd}[column sep=4em, row sep=4em]
+                FB  \arrow[r, "F(f^{-1})"] \arrow[dr, bend right, "1_{FB}"]
+                & FA  \arrow[d, "Ff"]\\
+                & FB
+            \end{tikzcd}
+        \]
+        This is equivalent to showing that
+        \[
+            \begin{align}
+                F(f^{-1})F(f) &= F(f^{-1}f)  \quad \text{(according to functoriality axioms)} \\
+                &= F(1_A)  \\
+                &= 1_{FA}
+            \end{align}
+        \]
+        \vspace{0.2in}
+        \[
+            \begin{align}
+                F(f)F(f^{-1}) &= F(ff^{-1})  \quad \text{(according to functoriality axioms)} \\
+                &= F(1_B)  \\
+                &= 1_{FB}
+            \end{align}
+        \]
+
+    \end{proof}
+
+    \newpage
+
+    \begin{example} (Forgetful functor)
+        Functor $U: \mathcal{C} \to \mathcal{D}$ that forgets the group structure.
+
+        \vspace{0.2in}
+
+        1. $U:\underline{Grp} \ \to \ \underline{Set} $ forgets the group structure on the objects and maps the group operation to the set operation.
+
+        \begin{gather*}
+            U: \underline{Grp} \ \to \ \underline{Set}\\
+            (G, *) \mapsto G\\\\
+        \end{gather*}
+
+        2. $U:\underline{Grp} \ \to \ \underline{Mon} $ forgets the group structure on the objects and maps the group operation to the monoid operation.
+
+        \[
+            \begin{tikzcd}[column sep=4em, row sep=4em]
+            (G, *, 1)
+                \arrow[r, "U"] \arrow[d, "f"]
+                & G = U(G, *, 1) \arrow[d, "f=U(f)"] \\
+                (H, *, 1) \arrow[r, "U"]
+                & H = U(H, *, 1)
+            \end{tikzcd}
+        \]
+
+        \vspace{0.2in}
+
+        3. $U: \underline{Ring} \to \underline{Grp}$
+
+        \[
+            \begin{tikzcd}[column sep=4em, row sep=4em]
+            (R,+, 0, *, 1)
+                \arrow[r, "U"] \arrow[d, "f"]
+                & (R, +, 0) \arrow[d, "f=U(f)"] \\
+                (S,+, 0, *, 1) \arrow[r, "U"]
+                & (S, +, 0)
+            \end{tikzcd}
+        \]
+
+        4. $U: \underline{Ab \ Grp} \to \underline{Grp}$ forgets the abelian group property.
+
+    \end{example}
+
+    \vspace{0.2in}
+
+    \begin{example} (Free Functors)
+
+        Let's start reminding ourselves of the definition of free group on $S$
+        \begin{itemize}
+            \item \textbf{Elements:} words like $x^{2}y^{3}z^{-2}$, where $x, y, z \in S $ subject to group axioms.
+            \item \textbf{Operation:} concatenation of words, subject to group axioms.
+            \item \textbf{Identity:} empty word.
+        \end{itemize}
+
+        So we can define a free functor $F: \underline{Set} \to \underline{Grp}$ as follows:
+
+        \begin{gather*}
+            F: \underline{Set} \ \to \ \underline{Grp}\\
+            S \mapsto F(S) \\
+        \end{gather*}
+
+        Here $F(S)$ is the free group on $S$.
+        \[
+            \begin{tikzcd}[column sep=4em, row sep=4em]
+                & x, y, z   \arrow[d,mapsto, "f"] \\
+                & f(x), f(y), f(z)
+            \end{tikzcd}
+            &
+            \begin{tikzcd}[column sep=4em, row sep=4em]
+                & \in  \\
+                & \in
+            \end{tikzcd}
+            &
+            \begin{tikzcd}[column sep=4em, row sep=4em]
+                &  S   \arrow[d, "f"] \\
+                & T
+            \end{tikzcd}
+            &
+            \begin{tikzcd}[column sep=4em, row sep=4em]
+                & F(S)   \arrow[d, "F(f)"] \\
+                & F(T)
+            \end{tikzcd}
+            &
+            \begin{tikzcd}[column sep=4em, row sep=4em]
+                & x^{2}y^{3}z^{-2}   \arrow[d,mapsto] \\
+                & f(x)^{2}f(y)^{3}f(z)^{-2}
+            \end{tikzcd}
+            &
+        \]
+    \end{example}
+
+    \vspace{0.2in}
+
+    \begin{example} (Topological Space with a base point)
+
+        Let $X$ be a topological space with a base point $x \in X$.
+
+        We can define a functor $\Pi_1: \underline{Top_*} \to \underline{Grp}$ that maps a topological
+        space with a base point (i.e $Top_*$) to its fundamental group:
+
+        \begin{gather*}
+            Top_X: \underline{Grp}  \stackrel{\Pi_1}{\to} \ \underline{Set}\\
+            (X, O(x), x) \mapsto \Pi_1(X) \\\\
+        \end{gather*}
+
+        Here $X$ is the fundamental group of $X$.
+
+    \end{example}
+
+    \vspace{0.2in}
+
+    \begin{exercise}
+        1. Let $G, H$ be groups. Define following functor:
+        \[
+            F: \Sigma(G) \ \to \ \Sigma(H)\\
+        \]
+
+        2. Let $P, Q$ be posets. Define following functor:
+        \[
+            F: \underline{P} \ \to \ \underline{Q}\\
+        \]
+    \end{exercise}
+
+    \begin{proposition}
+        Small categories and functors form a category $\underline{Cat}$.
+    \end{proposition}
+    \begin{proof}
+        Formally,
+        \begin{itemize}
+            \item \textbf{objects}: $Ob(\underline{Cat})$ = small categories
+            \item \textbf{maps}: for small categories $\mathcal{C}, \mathcal{D} \in Ob(\underline{Cat})$,
+            \[
+                \underline{Cat}(\mathcal{C}, \mathcal{D}) = \{F | F: \mathcal{C} \to \mathcal{D}\}
+            \]
+            \item \textbf{composition}:
+            \[
+                \underline{Cat}(\mathcal{D},\mathcal{E}) \times \underline{Cat}(\mathcal{C},\mathcal{D}) \stackrel{\circ}{\to} \underline{Cat}(\mathcal{C},\mathcal{E}) \\
+            \]
+
+            \[
+                \begin{equation*}
+                (G \times F)
+                    \mapsto \tikzmarknode{node1}{GF}
+                \end{equation*}
+                \annotate[yshift=-1em]{below}{node1}{composition of functors $G$ and $F$}
+            \]
+
+            \[
+                \begin{tikzcd}[column sep=4em, row sep=4em]
+                    A \arrow[r] \arrow[d, "f"]
+                    & G(F(A)) \arrow[d, "G(F(f))"] \\
+                    B \arrow[r]
+                    & G(F(B))
+                \end{tikzcd}
+            \]
+        \end{itemize}
+        To conclude the proof we need to show
+        \begin{exercise} Show that the following axioms are satisfied to conclude the proof:
+
+            \begin{itemize}
+                \item \textbf{associativity}: let $F, G, H$ be functors. Show $H(GF) = GH(F)$.
+                \item \textbf{identity}: let $F: \mathcal{C} \to \mathcal{D}$ be a functor. Show $F = F 1_{\mathcal{C}} = 1_{\mathcal{D}}F$.
+            \end{itemize}
+        \end{exercise}
+    \end{proof}
+
+
+\end{document}

@@ -1,0 +1,400 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+
+\usepackage{tikz}
+\usepackage{tikz-cd}
+\usepackage{graphicx} % Required for inserting images
+\usepackage[a4paper, margin=1in]{geometry}
+\usepackage{amsfonts}
+\usepackage{amsmath} % Set custom margins
+\usepackage{parskip}
+\usepackage{amssymb} % disable indentation
+\usepackage{amsthm}
+\usepackage{annotate-equations}
+
+
+\title{Category Theory - Lecture 5 (Notes)}
+\author{Vorashil Farzaliyev}
+\date{September 2024}
+
+% Define a new theorem style that starts content on a new line
+
+
+\newtheorem{remark}{Remark}[section]
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{proposition}{Proposition}[section]
+\newtheorem{definition}{Definition}[section]
+\newtheorem{observation}{Observation}[section]
+\newtheorem{example}{Example}[section]
+\newtheorem{exercise}{Exercise}[section]
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{note}{Note}[section]
+
+\renewcommand{\shorto}{\to}
+% new command for making \mapsto 0.5cm
+
+\renewcommand{\to}{\xrightarrow{\hspace{0.5cm}}}  % Adjust the length as needed
+\renewcommand{\mapsto}{\mathrel{\kernel\longmapsto\kernel}}  % Adjust spacing with \mkern if needed
+
+\begin{document}
+    \maketitle
+
+    \begin{exercise}
+        Let $\mathcal{C}$ be a category.
+
+        Let \(f, g: A \to B\) and let \(u: A' \to A\) be an isomorphism.
+        Then,
+        \[
+            f = g \Leftrightarrow f \circ u = g \circ u
+        \]
+    \end{exercise}
+
+    \begin{proof}
+        \((\Rightarrow)\): It is clear.
+
+
+        \((\Leftarrow)\): If \(u: A' \to A\) is an isomorphism, then there exists \(u^{-1}: A \to A'\) such that
+
+        \[
+            \begin{align}
+                fu = gu &\Rightarrow fuu^{-1} = guu^{-1} \\
+                &\Rightarrow f = g \\
+            \end{align}
+        \]
+    \end{proof}
+
+
+    \section{Natural Transformations}
+
+    \begin{definition}
+        Let \(F, G: \mathbf{C} \to \mathbf{D}\) be functors.
+
+        A \textbf{natural transformation} \(\phi: F \Rightarrow G\) is a family of maps:
+
+        \[
+            \{\phi_A: FA \to GA \ | \ A \in Ob(\mathbf{C})\}
+        \]
+
+        such that for all \(f: A \to B\) in \(\mathbf{C}\), we have
+
+        \[
+            \begin{array}{c c} % Create a 2x2 array
+                \mathbf{C} & \mathbf{D} \\
+                \begin{tikzcd}[column sep=4em, row sep=4em]
+                    A \arrow[d, mapsto, "f"] \\
+                    B
+                \end{tikzcd}
+                &
+                \begin{tikzcd}[column sep=7em, row sep=4em]
+                    FA \arrow[r, "\phi_A"] \arrow[d, "f"]
+                    & GA \arrow[d, "Gf"] \\
+                    FB\arrow[r, "\phi_B"]
+                    & GB
+                \end{tikzcd}
+            \end{array}
+        \]
+    \end{definition}
+
+
+    \vspace{0.2in}
+
+    \newpage
+
+    \begin{example}
+        Fix \(n \in \mathbb{N}\)
+
+        \begin{itemize}
+            \item \(\mathbf{C} = \underline{CRing} = \) category of commutative rings
+            \item \(\mathbf{D} = \) category of monoids
+            \item \(F: \underline{CRing} \to \underline{Mon}\) is the functor
+            \[
+                F = M_n: \underline{CRing} \to \underline{Mon}
+            \]
+            Here \(M_n(R)\) is \(n \times n\) matrix with entries in \(R\). So \(\underline{Mon}\) is
+            the category of monoids with \(n \times n\) matrices as objects.
+            \[
+                \begin{tikzcd}[column sep=7em, row sep=4em]
+                    R \arrow[r, mapsto,  "F"] \arrow[d, "f"]
+                    & M_n(R) \arrow[d, "M_n(f)"] \\
+                    S \arrow[r, "F"]
+                    & M_n(S)
+                \end{tikzcd}
+            \]
+            \item \(G: \underline{CRing} \to \underline{Mon}\) is the functor
+            \[
+                G = U: \underline{CRing} \to \underline{Mon}
+            \]
+            Here we have
+            \[
+                \begin{tikzcd}[column sep=7em, row sep=4em]
+                (R,+, *, 0, 1)
+                    \arrow[r, mapsto,  "U"] \arrow[d, "f"]
+                    & (R, +, 1) \arrow[d, "U(f)"] \\
+                    (S,+, *, 0, 1) \arrow[r, "U"]
+                    & (S, *, 1)
+                \end{tikzcd}
+            \]
+            So \(U\) simply returns the underlying monoid of a given ring.
+        \end{itemize}
+
+        Now we can define a natural transformation
+
+        \[
+            det : M_n \Longrightarrow U
+        \]
+
+        For \(R = (R, +, *, 0, 1) \in \underline{CRing}\), we need
+
+        \begin{gather*}
+            det_R: FR \to GR\\
+            det_R: M_n(R) \to U(R)\\
+            det_R: M_n(R) \to (R, *, 1)\\
+        \end{gather*}
+
+        Here \(det_R\) is a monoid homomorphism
+
+        This is monoid homomorphism because
+
+        \[
+            \left\{
+            \begin{array}{ll}
+                det_R(M * N) = det_R(M) * det_R(N) \text{ (it preserves multiplication)} \\
+                \vspace{0.1in}                                                           \\
+                det_R(I_n) = 1_R   \text{ (it preserves identity)}                          \\
+            \end{array}
+            \right.
+        \]
+
+        So now need to check that this is a natural transformation. (i.e we need to check its \textbf{naturality}).
+        \[
+            \begin{array}{c c} % Create a 2x2 array
+                \underline{\mathbf{Cring}} & \underline{\mathbf{Mon}} \\
+                \begin{tikzcd}[column sep=4em, row sep=4em]
+                    R \arrow[d, mapsto, "f"] \\
+                    S
+                \end{tikzcd}
+                &
+                \begin{tikzcd}[column sep=7em, row sep=4em]
+                    M_n(R) \arrow[r, "det_R"] \arrow[d, "M_n(f)"]
+                    & R \arrow[d, "f"] \\
+                    M_n(S) \arrow[r, "det_S"]
+                    & S
+                \end{tikzcd}
+            \end{array}
+        \]
+
+        \[
+            \begin{tikzcd}[column sep=7em, row sep=4em]
+                \begin{pmatrix}
+                    a & b \\ c & d
+                \end{pmatrix}
+                \arrow[r, mapsto,  "det_R"] \arrow[d, "M_n(f)"]
+                & ad - bc \arrow[d, "f"] \\
+                \begin{pmatrix}
+                    fa & fb \\ fc & fd
+                \end{pmatrix}
+                \arrow[r, "U"]
+                & f(ad -bc)
+            \end{tikzcd}
+        \]
+
+    \end{example}
+
+    \subsection{Notation}
+
+    \subsubsection{Natural transformation diagram}
+
+    For \(F, G: \mathbf{C} \to \mathbf{D}\) and \(\phi: F \Rightarrow G\) as natural transformation, we write
+
+    \[
+        \begin{tikzcd}[column sep=7em, row sep=4em]
+            \mathbf{C} \arrow[r, bend left=50, "F"{name=F, above}]
+            \arrow[r, bend right=50, "G"{name=G, below}]
+            & \mathbf{D}
+            \arrow[Rightarrow, from=F, to=G, "\phi"]
+        \end{tikzcd}
+    \]
+
+    \subsubsection{Composition diagram}
+
+    Given \(F, G, H: \mathbf{C} \to \mathbf{D}\) and \(\phi, \psi: F \Rightarrow G\) as natural transformations, we write
+
+    \[
+        \begin{tikzcd}[column sep=7em, row sep=4em]
+            \mathbf{C} \arrow[r, bend left=50, "F"{name=F, above}]
+            \arrow[r, "G"{name=G, above}]
+            \arrow[r, bend right=50, "H"{name=H, below}]
+            & \mathbf{D}
+            \arrow[Rightarrow, from=F, to=G, "\phi"]
+            \arrow[Rightarrow, from=G, to=H, "\psi"]
+        \end{tikzcd}
+    \]
+
+    We define
+
+    \[
+        \begin{tikzcd}[column sep=7em, row sep=4em]
+            \mathbf{C} \arrow[r, bend left=50, "F"{name=F, above}]
+            \arrow[r, bend right=50, "H"{name=H, below}]
+            & \mathbf{D}
+            \arrow[Rightarrow, from=F, to=H, "\psi\phi"]
+        \end{tikzcd}
+    \]
+
+    Also
+
+    \[
+        FA \stackrel{(\psi\phi)_A}{\xrightarrow{\hspace{1cm}}} HA \ =_{def} \ FA \stackrel{\phi_A}{\to} GA \stackrel{\psi_A}{\to} HA
+    \]
+
+    So we can define composition
+
+    \[
+        \begin{array}{c c} % Create a 2x2 array
+            \mathbf{C} & \mathbf{D} \\
+            \begin{tikzcd}[column sep=4em, row sep=4em]
+                A \arrow[d, mapsto, "f"] \\
+                B
+            \end{tikzcd}
+            &
+            \begin{tikzcd}[column sep=7em, row sep=4em]
+                FA \arrow[r, "\phi_A"] \arrow[d, "f"]
+                & GA \arrow[d, "Gf"] \arrow[r, "h_A"]
+                & HA \arrow[d, "Hf"] \\
+                FB\arrow[r, "\phi_B"]
+                & GB \arrow[r, "h_B"]
+                & HB
+            \end{tikzcd}
+            % Draw external arrows pointing to the rectangles
+            \begin{tikzpicture}[overlay]
+                % Arrow to the first rectangle (FA, GA, FB, GB)
+                \draw[->, thick] (-5, -3) -- (-5, -0.5) node[near start, auto] {Naturality of \(\phi\)};
+                % Arrow to the second rectangle (HA, HB)
+                \draw[->, thick] (-2, -3) -- (-2, -0.5) node[near start, right] {Naturality of \(\psi\)};
+            \end{tikzpicture}
+        \end{array}
+    \]
+
+    \vspace{0.2in}
+
+    \subsection{Identity natural transformation}
+
+
+    For \(F: \mathbf{C} \to \mathbf{D}\), we can define
+
+    \[
+        \begin{tikzcd}[column sep=7em, row sep=4em]
+            \mathbf{C} \arrow[r, bend left=50, "F"{name=F, above}]
+            \arrow[r, bend right=50, "F"{name=G, below}]
+            & \mathbf{D}
+            \arrow[Rightarrow, from=F, to=G, "1_F"]
+        \end{tikzcd}
+    \]
+
+    by \(FA \stackrel{1_{FA}}{\xrightarrow{\hspace{1cm}}} FA\) for all \(A \in \mathbf{C}\).
+
+    Naturality of this is
+
+    \[
+        \begin{array}{c c} % Create a 2x2 array
+            \mathbf{C} & \mathbf{D} \\
+            \begin{tikzcd}[column sep=4em, row sep=4em]
+                A \arrow[d, mapsto, "f"] \\
+                B
+            \end{tikzcd}
+            &
+            \begin{tikzcd}[column sep=7em, row sep=4em]
+                FA \arrow[r, "1_{FA}"] \arrow[d, "Ff"]
+                & FA \arrow[d, "Ff"] \\
+                FB\arrow[r, "1_{FA}"]
+                & FB
+            \end{tikzcd}
+        \end{array}
+    \]
+
+    \subsection{Functor category}
+
+    \begin{definition} (Functor category)
+
+
+        For categories \(\mathbf{C}, \mathbf{D}\), where \(\mathbf{C}\) is a small category, we define the \textbf{functor category} \([\mathbf{C}, \mathbf{D}]\)
+        (sometimes denoted as \(\mathbf{D}^{\mathbf{C}}\)) as having
+
+        \begin{itemize}
+            \item \textbf{objects}: functors \(F: \mathbf{C} \to \mathbf{D}\), \(G: \mathbf{C} \to \mathbf{D}\)
+            \item \textbf{maps}: natural transformations \(\phi: F \Rightarrow G\)
+        \end{itemize}
+    \end{definition}
+
+    \vspace{0.2in}
+
+    \begin{exercise}
+        Check the associativity and unit axioms for functor category.
+    \end{exercise}
+
+    \newpage
+
+    \subsubsection{Isomorphisms in \(\mathbf{D}^{\mathbf{C}}\) or \([\mathbf{C}, \mathbf{D}]\)}
+
+    Fix \(\mathbf{C}, \mathbf{D}\).
+
+    By definition, an isomorphism in \([\mathbf{C}, \mathbf{D}]\) is \(\phi: F \Rightarrow G\) with an inverse
+
+    \[
+        \phi^{-1}: G \Rightarrow F
+    \]
+
+    This means that
+
+    \[
+        \begin{tikzcd}[column sep=4em, row sep=4em]
+            F  \arrow[Rightarrow, r, "\phi"] \arrow[Rightarrow,dr, bend right, "1_F"]
+            & G  \arrow[Rightarrow, d, "\phi^{-1}"]\\
+            & F
+        \end{tikzcd}
+        &
+        % Second commutative diagram in the second column
+        \begin{tikzcd}[column sep=4em, row sep=4em]
+            G  \arrow[Rightarrow, r, "\phi^{-1}"] \arrow[Rightarrow, dr, bend right, "1_G"]
+            & F  \arrow[Rightarrow, d, "\phi"]\\
+            & G
+        \end{tikzcd}
+    \]
+
+    This holds if and only if, for all \(A \in \mathbf{C}\), we have
+
+    \[
+        \begin{tikzcd}[column sep=4em, row sep=4em]
+            FA  \arrow[r, "\phi_A"] \arrow[dr, bend right, "1_{FA}"]
+            & GA  \arrow[d, "\phi_A^{-1}"]\\
+            & FA
+        \end{tikzcd}
+        &
+        % Second commutative diagram in the second column
+        \begin{tikzcd}[column sep=4em, row sep=4em]
+            GA  \arrow[r, "\phi_A^{-1}"] \arrow[dr, bend right, "1_{GA}"]
+            & FA  \arrow[d, "\phi_A"]\\
+            & GA
+        \end{tikzcd}
+    \]
+
+    This implies \(\forall A \in \mathbf{C}\), \(\phi_A: FA \to GA\) is an isomorphism.
+
+    \vspace{0.5in}
+
+    \begin{proposition}
+        Let \(\phi: F \Rightarrow G\) be a natural transformation.
+
+        Then \(\phi\) is an isomorphism if and only if for all \(A \in \mathbf{C}\)
+        \[
+            \phi_A: FA \to GA
+        \]
+        is an isomorphism.
+
+    \end{proposition}
+
+    \begin{note}
+        We need \(\phi\) to be natural in order to piece together all isomorphisms \(FA \to GA\) for all \(A \in \mathbf{C}\)
+    \end{note}
+
+\end{document}

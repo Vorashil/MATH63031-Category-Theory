@@ -1,0 +1,310 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+
+\usepackage{tikz}
+\usepackage{tikz-cd}
+\usepackage{graphicx} % Required for inserting images
+\usepackage[a4paper, margin=1in]{geometry}
+\usepackage{amsfonts}
+\usepackage{amsmath} % Set custom margins
+\usepackage{parskip}
+\usepackage{amssymb} % disable indentation
+\usepackage{amsthm}
+\usepackage{annotate-equations}
+
+
+\title{Category Theory - Lecture 6 (Notes)}
+\author{Vorashil Farzaliyev}
+\date{September 2024}
+
+% Define a new theorem style that starts content on a new line
+
+
+\newtheorem{remark}{Remark}[section]
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{proposition}{Proposition}[section]
+\newtheorem{definition}{Definition}[section]
+\newtheorem{observation}{Observation}[section]
+\newtheorem{example}{Example}[section]
+\newtheorem{exercise}{Exercise}[section]
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{note}{Note}[section]
+
+\renewcommand{\shorto}{\to}
+% new command for making \mapsto 0.5cm
+
+\renewcommand{\to}{\xrightarrow{\hspace{0.5cm}}}  % Adjust the length as needed
+\renewcommand{\mapsto}{\mathrel{\kernel\longmapsto\kernel}}  % Adjust spacing with \mkern if needed
+
+\begin{document}
+    \maketitle
+
+    From last time...
+
+
+    \begin{proposition}
+        Let \(\phi: F \Rightarrow G\) be a natural transformation.
+
+        \[
+            \begin{tikzcd}[column sep=7em, row sep=4em]
+                \mathbf{C} \arrow[r, bend left=50, "F"{name=F, above}]
+                \arrow[r, bend right=50, "G"{name=G, below}]
+                & \mathbf{D}
+                \arrow[Rightarrow, from=F, to=G, "\phi"]
+            \end{tikzcd}
+        \]
+
+        Assume that for all \(A \in \mathbf{C}\), \(\phi_A: FA \to GA\) is an isomorphism with
+        inverse \(\phi^{-1}_A: GA \to FA\).
+
+        Then \(\phi^{-1}: G \Rightarrow F\) is defined by
+
+        \[
+            (\phi^{-1})_A = (\phi_A)^{-1} \text{ for all } A \in \mathbf{C}
+        \]
+    \end{proposition}
+
+    \begin{proof}
+        We show that the naturality, as a family of maps, is given by
+
+        \[
+            \begin{array}{c c} % Create a 2x2 array
+                \mathbf{C} & \mathbf{D} \\
+                \begin{tikzcd}[column sep=4em, row sep=4em]
+                    A \arrow[d, mapsto, "f"] \\
+                    B
+                \end{tikzcd}
+                &
+                \begin{tikzcd}[column sep=7em, row sep=4em]
+                    GA \arrow[r, "\phi^{-1}_A"] \arrow[d, "Gf"]
+                    & FA \arrow[d, "Ff"] \\
+                    GB\arrow[r, "\phi^{-1}_B"]
+                    & FB
+                \end{tikzcd}
+                &
+                \begin{tikzpicture}[overlay]
+                    % Arrow to the first rectangle (FA, GA, FB, GB)
+                    \draw[->, thick] (3, -1) -- (3, 1.5) node[near start, auto] {But does this commute?};
+                    r
+                \end{tikzpicture}
+            \end{array}
+        \]
+
+        \vspace{0.2in}
+        We have
+
+        \[
+            \begin{tikzcd}[column sep=5em, row sep=4em]
+                GA \arrow[r, "\phi^{-1}_A"] \arrow[d, "Gf"]
+                \arrow[rr, bend left=35, "1_{GA}"] % Curved arrow from FA to HA
+                & FA \arrow[d, "Ff"] \arrow[r, "\phi_A"]
+                & GA \arrow[d, "Gf"] \\
+                GB \arrow[r, "\phi^{-1}_B"]
+                \arrow[rr, bend right=35, "1_{GB}"] % Curved arrow from FB to HB
+                & FB \arrow[r, "\phi_B"]
+                & GB
+            \end{tikzcd}
+            &
+            \begin{tikzpicture}[overlay]
+                % Arrow to the first rectangle (FA, GA, FB, GB)
+                \node at (-4.5, 0) {(1)};
+
+            \end{tikzpicture}
+        \]
+
+        \newpage
+
+        We show that \((1)\) commutes by post-composing it with
+        \(\phi_B\), \(\phi_A\), \(1_{GA}\), \(1_{GB}\) and
+        showing the following equality holds.
+
+        \[
+            \phi_A^{-1} Ff = Gf \phi_B^{-1}
+        \]
+
+    \end{proof}
+
+
+    \section{Equivalence of categories}
+
+    \subsection{Motivation}
+
+    We often have
+
+    \[
+        \begin{tikzcd}[column sep=7em, row sep=4em]
+            \mathbf{C} \arrow[r, bend left=50, "F"{name=F, above}]
+            & \mathbf{D} \arrow[l, bend left=50, "G"{name=G, above}]
+        \end{tikzcd}
+    \]
+
+    but asking
+    \begin{gather*}
+        GFA = A \text{ for all } A \in \mathbf{C}\\
+        FGX = X \text{ for all } X \in \mathbf{D}\\
+    \end{gather*}
+
+    is too restrictive. Because we are interested in isomorphisms, not the equality of objects
+
+
+    \begin{definition}
+        Let \(F: \mathbf{C} \to \mathbf{D}\) be a functor.
+
+        We say \(F\) is an \underline{equivalence} if there exists a functor \(G: \mathbf{D} \to \mathbf{C}\) and
+        following natural transformations
+        \begin{gather*}
+            \eta: 1_{\mathbf{C}} \Rightarrow GF\\
+            \xi: FG \Rightarrow 1_{\mathbf{D}}\\
+        \end{gather*}
+
+    \end{definition}
+
+    \begin{note}
+        The components of \(\eta\) and \(\xi\) are isomorphisms.
+
+        \[
+            \begin{array}{c c} % Create a 2x2 array
+                \underbrace{A \stackrel{\eta_A}{\xrightarrow{\hspace{1cm}}} GFA}_{in \ \mathbf{C}} \quad
+                &
+                \underbrace{FGX \stackrel{\xi_X}{\xrightarrow{\hspace{1cm}}} X}_{in \ \mathbf{D}} \\
+
+                \forall A \in \mathbf{C} & \forall X \in \mathbf{D} \\
+            \end{array}
+        \]
+    \end{note}
+
+    \vspace{0.2in}
+
+    \begin{theorem}
+        Let \(F: \mathbf{C} \to \mathbf{D}\) be a functor.
+
+        Then \(F\) is an equivalence if and only if \(F\) is essentially surjective and fully faithful.
+    \end{theorem}
+
+    \begin{proof}
+        \((\Rightarrow)\): Exercise.
+
+        \((\Leftarrow)\): Assume \(F\) is essentially surjective and fully faithful.
+
+        \[
+            \begin{align}
+                \text{Assume \(F\) is essentially surjective} &\Rightarrow (\forall X \in \mathbf{D})  (\exists A \in \mathbf{C})  (\exists \text{ isomorphism } FA \to X) \\
+                & \quad \ \quad \ \quad \  \downarrow \text{(axiom of choice)}  \\
+                &\Rightarrow \text{we have a function } G: Ob(\mathbf{D}) \to Ob(\mathbf{C}) \\
+                & \quad \quad \text{ a family of maps } (\xi_X: FGX \to X | X \in \mathbf{D}) \\
+                & \quad \quad \text{ such that } \xi_X: FGX \to X \text{ is an isomorphism } \forall X \in \mathbf{D} \\
+            \end{align}
+        \]
+
+        \textbf{Task 1:} Extend \(G\) to a functor \(G\) and \(\xi\) to natural transformation.
+
+        For \(f: X \to Y\) in \(\mathbf{D}\), we need to define \(G(f): GX \to GY\) in \(\mathbf{C}\).
+        We use the fact that \(F\) is fully faithful
+
+        \[
+            \mathbf{C}(GX, GY) \stackrel{F}{\to} \mathbf{D}(FGX, FGY) \text{ is bijection.}
+        \]
+
+        This means for every \(FGX \stackrel{v}{\to} FGY\) there is a unique \(GX \stackrel{u}{\to} GY\) s.t
+        \[
+            FGX \stackrel{Fu}{\to} FGY = FGX \stackrel{v}{\to} FGY
+        \]
+
+        So to show that \(G(gf) = G(g) G(f)\)), we show \(G(g) G(f)\) has the same property, i.e
+
+        \[
+            \begin{align}
+                F(G(g) G(f)) : FGX \to FGZ = FGX \stackrel{\xi_X}{\to} X \stackrel{gf}{\to} Z \stackrel{\xi_Z^{-1}}{\to} FGZ \\
+            \end{align}
+        \]
+
+        We know
+        \[
+            \begin{tikzcd}[column sep=7em, row sep=4em]
+                FGX \arrow[r,  "\xi_X"] \arrow[d, "FG(gf)"]
+                & X \arrow[d, "gf"] \\
+                FGZ \arrow[r, "\xi_Z"]
+                & Z
+            \end{tikzcd}
+        \]
+
+        Consider
+        \[
+            FGX \stackrel{\xi_X}{\to} X \stackrel{f}{\to} Y \stackrel{\xi_Y^{-1}}{\to} FGY
+        \]
+
+        So there is a unique map, which we write \(Gf: GX \to GY\) such that
+
+        \[
+            FGf = FGX \to FGY = FGX \stackrel{\xi_X}{\to} X \stackrel{f}{\to} Y \stackrel{\xi_Y^{-1}}{\to} FGY \ \text{ (*) }
+        \]
+
+        Here
+
+        \[
+            \begin{array}{c c} % Create a 2x2 array
+            (*)
+                \Leftrightarrow &
+                \begin{tikzcd}[column sep=7em, row sep=4em]
+                    FGX \arrow[r,  "\xi_X"] \arrow[d, "FG(gf)"]
+                    & X \arrow[d, "gf"] \\
+                    FGZ \arrow[r, "\xi_Z"]
+                    & Z
+                \end{tikzcd} \text{ commutes } \\
+
+            \end{array}
+        \]
+
+        To check \(G\) is a functor, let \(f: X \to Y\) and \(g: Y \to Z\) be in \(\mathbf{D}\) and show
+
+        \[
+            G(gf): GX \to GZ = G(g) G(f): GX \to GZ
+        \]
+
+        By definition, \(G(gf)\) is the unique map
+
+        \[
+            u: GX \to GZ
+        \]
+        such that
+        \[
+            F(u): FGX \to FGZ = FGX \stackrel{\xi_X}{\to} X \stackrel{f}{\to} Z \stackrel{\xi_Z^{-1}}{\to} FGZ
+        \]
+
+        We need to show following diagram commutes
+
+        \[
+            \begin{tikzcd}[column sep=7em, row sep=4em]
+                FGX \arrow[r,  "\xi_X"] \arrow[d, "F(Gg Gf)"]
+                & X \arrow[d, "gf"] \\
+                FGZ \arrow[r, "\xi_Z"]
+                & Z
+            \end{tikzcd}
+        \]
+        But this follows from
+        \[
+            \begin{tikzcd}[column sep=7em, row sep=4em]
+                FGX \arrow[r, "\xi_X"] \arrow[d, "FGf"]
+                & X \arrow[d, "f"] \\
+                FGY \arrow[r, "\xi_Y"] \arrow[d, "FGg"]
+                & Y \arrow[d, "g"] \\
+                FGZ \arrow[r, "\xi_Z"]
+                & Z
+            \end{tikzcd}
+            \begin{tikzpicture}[overlay]
+                % Arrow to the first rectangle (FA, GA, FB, GB)
+                \node at (-2, 1) {(1)};
+                \node at (-2, -1) {(2)};
+
+            \end{tikzpicture}
+        \]
+
+        Since both \((1), (2)\) commute.
+
+        In the same way we show
+
+        \[
+            G(1_X) = 1_{GX}
+        \]
+    \end{proof}
+\end{document}
